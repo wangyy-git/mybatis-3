@@ -77,6 +77,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      //判断调用的方法是不是Object的默认方法 不再代理
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else if (method.isDefault()) {
@@ -110,6 +111,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private Object invokeDefaultMethodJava8(Object proxy, Method method, Object[] args)
       throws Throwable {
     final Class<?> declaringClass = method.getDeclaringClass();
+    //8的新特性 LookUp实现反射操作
     return lookupConstructor.newInstance(declaringClass, ALLOWED_MODES).unreflectSpecial(method, declaringClass)
         .bindTo(proxy).invokeWithArguments(args);
   }
